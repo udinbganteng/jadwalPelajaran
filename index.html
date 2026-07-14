@@ -1,22 +1,29 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <meta name="theme-color" content="#222831">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    
+
     <link rel="manifest" href="./manifest.json">
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="icon" type="image/png" href="gambar/icon-192.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="gambar/icon-192.png" sizes="192x192">
+    <link class="apple-touch-icon" href="gambar/icon-192.png">
+    <title>Catatan Uang</title>
     <title>Jadwal Pelajaran XI RPL 2</title>
-    
+
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="nav-halaman">
         <button id="btn-produktif" class="halaman-aktif">Jadwal Produktif</button>
@@ -27,7 +34,7 @@
         <h1>Jadwal Pelajaran</h1>
         <h2 id="sub-header" style="color: var(--button); margin-top: 4px; font-size: 1.2rem;">Produktif</h2>
     </header>
-    
+
     <nav id="nav-hari">
         <button data-hari="Senin">Senin</button>
         <button data-hari="Selasa">Selasa</button>
@@ -39,27 +46,27 @@
     <div class="container form-container">
         <div class="buatJadwal">
             <input type="hidden" id="edit-id">
-            
+
             <div class="input-group full-width">
                 <label for="mataPelajaran">Mata Pelajaran</label>
                 <input type="text" placeholder="Contoh: Pemrograman Web" required id="mataPelajaran">
             </div>
-            
+
             <div class="input-group full-width">
                 <label for="nama-guru">Nama Guru</label>
                 <input type="text" placeholder="Contoh: Pak Budi" id="nama-guru" required>
             </div>
-            
+
             <div class="input-group half-width">
                 <label for="jam-pertama">Jam Mulai</label>
                 <input type="text" id="jam-pertama" required placeholder="07:00">
             </div>
-            
+
             <div class="input-group half-width">
                 <label for="jam-kedua">Jam Selesai</label>
                 <input type="text" id="jam-kedua" required placeholder="09:00">
             </div>
-            
+
             <div class="input-group full-width">
                 <label for="hari">Hari</label>
                 <select id="hari" required>
@@ -70,10 +77,12 @@
                     <option value="Jumat">Jumat</option>
                 </select>
             </div>
-            
+
             <div class="form-actions full-width">
                 <button class="tambah" id="btn-simpan">Tambahkan Jadwal</button>
-                <button id="btn-batal" style="display: none; background: var(--pendukung); color: white; border-top: 3px solid #555;">Batal Edit</button>
+                <button id="btn-batal"
+                    style="display: none; background: var(--pendukung); color: white; border-top: 3px solid #555;">Batal
+                    Edit</button>
             </div>
         </div>
     </div>
@@ -81,10 +90,11 @@
     <div class="container">
         <div class="jadwal">
             <ul id="daftar-jadwal-ul">
-                </ul>
+            </ul>
         </div>
     </div>
 
     <script src="script.js"></script>
 </body>
+
 </html>
