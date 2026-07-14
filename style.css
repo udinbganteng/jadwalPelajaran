@@ -1,0 +1,243 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+:root {
+    --bg: #EEEEEE;
+    --button: #FFD369;
+    --konten: #222831;
+    --pendukung: #393E46;
+    --card-bg: #2a2e35;
+    --radius: 10px;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--konten);
+    padding-bottom: 40px;
+}
+
+/* Navigasi Utama */
+.nav-halaman {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    padding: 16px;
+    background: var(--konten);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.nav-halaman button {
+    font-weight: 600;
+    opacity: 0.6;
+    background: transparent;
+    color: white;
+    border: none;
+    box-shadow: none;
+}
+
+.nav-halaman button.halaman-aktif {
+    opacity: 1;
+    background: linear-gradient(180deg, #ffc235, #FFD369);
+    color: var(--konten);
+    border-top: 2px solid #fff;
+    box-shadow: 0 0 15px rgba(255, 194, 53, 0.4);
+}
+
+/* Header & Navigasi Hari */
+header {
+    text-align: center;
+    margin: 24px 0 16px 0;
+}
+
+#nav-hari {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0 auto 32px auto;
+    padding: 0 16px;
+}
+
+button {
+    background: linear-gradient(180deg, #FFD369, #ffc235);
+    color: var(--konten);
+    font-weight: 600;
+    border: none;
+    border-top: 2px solid #ffe3a0;
+    padding: 10px 18px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 194, 53, 0.4);
+}
+
+#nav-hari button {
+    background: white;
+    border-top: 2px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+#nav-hari button.hari-aktif {
+    background: linear-gradient(180deg, #FFD369, #ffc235);
+    border-top: 2px solid #fff;
+    box-shadow: 0 4px 12px rgba(255, 194, 53, 0.4);
+}
+
+/* Container Umum */
+.container {
+    width: 90%;
+    max-width: 800px;
+    margin: 0 auto 24px auto;
+    background: white;
+    border-radius: var(--radius);
+    border-top: 4px solid var(--konten);
+    padding: 24px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+/* Layout Form Input (Responsif dengan Grid) */
+.buatJadwal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.input-group label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--pendukung);
+}
+
+.full-width { width: 100%; }
+.half-width { width: 100%; } /* Di HP, semua input penuh */
+
+input, select {
+    border: 1px solid #ddd;
+    border-radius: var(--radius);
+    padding: 12px;
+    font-size: 1rem;
+    background: #f9f9f9;
+    transition: all 0.3s ease;
+}
+
+input:focus, select:focus {
+    outline: none;
+    background: white;
+    border-color: var(--button);
+    box-shadow: 0 0 0 3px rgba(255, 211, 105, 0.3);
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+}
+.form-actions button { flex: 1; }
+
+/* Tampilan List & Card Jadwal */
+ul { list-style: none; }
+
+li {
+    background: linear-gradient(135deg, var(--konten), var(--card-bg));
+    padding: 20px;
+    border-radius: 12px;
+    color: #fff;
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column; /* HP Layout */
+    gap: 16px;
+    box-shadow: 0 6px 12px rgba(34, 40, 49, 0.15);
+    border-left: 5px solid var(--button);
+}
+
+.penjelasan-kiri h3 {
+    font-size: 1.1rem;
+    margin-bottom: 4px;
+    color: var(--button);
+}
+
+.penjelasan-kiri p.guru {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.penjelasan-kanan {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 12px;
+}
+
+.jam-pelajaran {
+    font-size: 0.95rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.edit-hapus {
+    display: flex;
+    gap: 8px;
+}
+
+.edit-hapus button {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    border-top: 1px solid rgba(255,255,255,0.3);
+}
+
+/* Empty State (Jadwal Kosong) */
+.jadwal-kosong {
+    text-align: center;
+    background: #f8f9fa;
+    border: 2px dashed #ddd;
+    border-radius: var(--radius);
+    padding: 40px 20px;
+    color: var(--pendukung);
+}
+
+.jadwal-kosong h3 {
+    margin-bottom: 8px;
+    color: var(--konten);
+}
+
+.jadwal-kosong p {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* --- MEDIA QUERIES UNTUK TABLET & DESKTOP --- */
+@media (min-width: 600px) {
+    .half-width { width: calc(50% - 8px); } /* 2 kolom untuk jam mulai & selesai */
+    
+    li {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .penjelasan-kanan {
+        flex-direction: column;
+        align-items: flex-end;
+        border-top: none;
+        padding-top: 0;
+        gap: 12px;
+    }
+}

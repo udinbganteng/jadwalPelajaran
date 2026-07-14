@@ -1,0 +1,25 @@
+{
+  "name": "Jadwal Pelajaran XI RPL 2",
+  "short_name": "Jadwal RPL2",
+  "description": "Aplikasi PWA Jadwal Pelajaran Teori dan Produktif XI RPL 2",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#EEEEEE",
+  "theme_color": "#222831",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "./assets/icons/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./assets/icons/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
+    }
+  ]
+}
