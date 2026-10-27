@@ -1,14 +1,11 @@
-const CACHE_NAME = 'jadwal-rpl2-v1';
+const CACHE_NAME = 'jadwal-rpl2-v2';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
-  './css/style.css',
-  './js/script.js',
+  './script.js',
   './manifest.json',
-  './assets/icons/icon-192.png',
-  './assets/icons/icon-512.png',
-  'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
-  'https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_fvQtMwCp5xC35qmxA.woff2'
+  './gambar/icon-192.png',
+  './gambar/icon-512.png'
 ];
 
 // 1. Install Event: Membuat & mengisi cache awal

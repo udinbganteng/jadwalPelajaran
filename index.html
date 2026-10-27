@@ -1,100 +1,624 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <meta name="theme-color" content="#222831">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-
-    <link rel="manifest" href="./manifest.json">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <link rel="icon" type="image/png" href="gambar/icon-192.png" sizes="32x32">
-    <link rel="icon" type="image/png" href="gambar/icon-192.png" sizes="192x192">
-    <link class="apple-touch-icon" href="gambar/icon-192.png">
-    <title>Catatan Uang</title>
     <title>Jadwal Pelajaran XI RPL 2</title>
-
-    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="./manifest.json">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sage: {
+                            50: '#f4f7f5',
+                            100: '#e3ece6',
+                            200: '#c5d7cc',
+                            500: '#588b76',
+                            600: '#43705e',
+                            700: '#36594c',
+                            800: '#2b473d',
+                        },
+                        amberAccent: {
+                            500: '#e67e22',
+                            600: '#d35400',
+                        },
+                        softBg: '#e9ece9',
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'neu-out': '8px 8px 16px #d1d5d2, -8px -8px 16px #ffffff',
+                        'neu-in': 'inset 4px 4px 8px #d1d5d2, inset -4px -4px 8px #ffffff',
+                        'neu-sm': '4px 4px 8px #d1d5d2, -4px -4px 8px #ffffff',
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="./script.js" defer></script>
+    <style>
+        body {
+            background-color: #e5ebe7;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #2d3748;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
 </head>
+<body class="min-h-screen flex justify-center items-start sm:py-6 p-0">
 
-<body>
-    <div class="nav-halaman">
-        <button id="btn-produktif" class="halaman-aktif">Jadwal Produktif</button>
-        <button id="btn-teori">Jadwal Teori</button>
-    </div>
-
-    <header>
-        <h1>Jadwal Pelajaran</h1>
-        <h2 id="sub-header" style="color: var(--button); margin-top: 4px; font-size: 1.2rem;">Produktif</h2>
-    </header>
-
-    <nav id="nav-hari">
-        <button data-hari="Senin">Senin</button>
-        <button data-hari="Selasa">Selasa</button>
-        <button data-hari="Rabu">Rabu</button>
-        <button data-hari="Kamis">Kamis</button>
-        <button data-hari="Jumat">Jumat</button>
-    </nav>
-
-    <div class="container form-container">
-        <div class="buatJadwal">
-            <input type="hidden" id="edit-id">
-
-            <div class="input-group full-width">
-                <label for="mataPelajaran">Mata Pelajaran</label>
-                <input type="text" placeholder="Contoh: Pemrograman Web" required id="mataPelajaran">
+    <!-- Mobile Container Frame -->
+    <div class="w-full max-w-md bg-[#e9ece9] min-h-screen sm:min-h-[850px] sm:rounded-[36px] shadow-2xl flex flex-col justify-between overflow-hidden relative border-4 border-white/60">
+        
+        <!-- HEADER TOP BAR -->
+        <div class="p-5 pb-3">
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 rounded-full bg-sage-600 text-white flex items-center justify-center font-bold text-lg shadow-neu-sm border-2 border-white/80">
+                        RPL
+                    </div>
+                    <div>
+                        <h1 class="font-extrabold text-lg text-gray-800 leading-tight">Jadwal XI RPL 2</h1>
+                        <p id="current-date-str" class="text-xs text-gray-500 font-medium">Memuat tanggal...</p>
+                    </div>
+                </div>
+                <!-- Menu / Realtime Badge -->
+                <div class="flex items-center space-x-2">
+                    <span id="live-clock" class="text-xs font-bold text-sage-700 bg-white/70 px-3 py-1.5 rounded-full shadow-neu-sm border border-white">
+                        00:00:00
+                    </span>
+                </div>
             </div>
 
-            <div class="input-group full-width">
-                <label for="nama-guru">Nama Guru</label>
-                <input type="text" placeholder="Contoh: Pak Budi" id="nama-guru" required>
+            <!-- WEEK TYPE TOGGLE SWITCH -->
+            <div class="bg-gray-200/70 p-1.5 rounded-2xl shadow-neu-in flex items-center relative mb-3">
+                <button id="btn-week-umum" onclick="setWeekType('umum')" class="w-1/2 py-2 text-xs font-bold rounded-xl transition-all duration-300 z-10 text-white bg-sage-600 shadow-md">
+                    <i class="fa-solid fa-book-open mr-1"></i> Minggu Umum
+                </button>
+                <button id="btn-week-produktif" onclick="setWeekType('produktif')" class="w-1/2 py-2 text-xs font-bold rounded-xl transition-all duration-300 z-10 text-gray-600">
+                    <i class="fa-solid fa-code mr-1"></i> Minggu Produktif
+                </button>
             </div>
 
-            <div class="input-group half-width">
-                <label for="jam-pertama">Jam Mulai</label>
-                <input type="text" id="jam-pertama" required placeholder="07:00">
-            </div>
-
-            <div class="input-group half-width">
-                <label for="jam-kedua">Jam Selesai</label>
-                <input type="text" id="jam-kedua" required placeholder="09:00">
-            </div>
-
-            <div class="input-group full-width">
-                <label for="hari">Hari</label>
-                <select id="hari" required>
-                    <option value="Senin">Senin</option>
-                    <option value="Selasa">Selasa</option>
-                    <option value="Rabu">Rabu</option>
-                    <option value="Kamis">Kamis</option>
-                    <option value="Jumat">Jumat</option>
-                </select>
-            </div>
-
-            <div class="form-actions full-width">
-                <button class="tambah" id="btn-simpan">Tambahkan Jadwal</button>
-                <button id="btn-batal"
-                    style="display: none; background: var(--pendukung); color: white; border-top: 3px solid #555;">Batal
-                    Edit</button>
+            <!-- DAY PILLS SELECTOR (SENIN - MINGGU) -->
+            <div class="flex overflow-x-auto space-x-2 py-2 hide-scrollbar" id="days-pill-container">
+                <!-- Injected via JS -->
             </div>
         </div>
-    </div>
 
-    <div class="container">
-        <div class="jadwal">
-            <ul id="daftar-jadwal-ul">
-            </ul>
+        <!-- MAIN SCHEDULE CONTENT -->
+        <div class="flex-1 px-5 pb-24 overflow-y-auto hide-scrollbar" id="schedule-container">
+            <!-- Schedule cards injected via JS -->
         </div>
+
+        <!-- BOTTOM NAVBAR (UPDATED WITH HORIZONTAL ADD BUTTON) -->
+        <div class="absolute bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md px-5 py-3 rounded-t-3xl shadow-lg border-t border-white/40 flex items-center gap-3 z-20">
+            <button onclick="switchTab('home')" id="nav-home" class="p-3 text-sage-600 rounded-2xl transition-all bg-sage-50 hover:bg-sage-100 flex flex-col items-center justify-center">
+                <i class="fa-solid fa-calendar-day text-lg"></i>
+            </button>
+            
+            <button onclick="openModal()" class="flex-1 py-3 px-4 bg-sage-600 hover:bg-sage-700 text-white font-bold rounded-2xl shadow-md transition-all active:scale-95 flex items-center justify-center gap-2 text-xs sm:text-sm">
+                <i class="fa-solid fa-plus"></i>
+                <span>Tambah Catatan / Tugas</span>
+            </button>
+            
+            <button onclick="switchTab('notes')" id="nav-notes" class="p-3 text-gray-400 hover:text-sage-600 rounded-2xl transition-all bg-gray-50 hover:bg-sage-50 relative flex flex-col items-center justify-center">
+                <i class="fa-solid fa-clipboard-list text-lg"></i>
+                <span id="notes-badge" class="hidden absolute top-2 right-2 w-2.5 h-2.5 bg-amber-500 rounded-full border-2 border-white"></span>
+            </button>
+        </div>
+
+        <!-- MODAL TAMBAH TUGAS / CATATAN -->
+        <div id="task-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center hidden">
+            <div class="bg-[#e9ece9] w-full max-w-md rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl transform transition-all border border-white">
+                <div class="flex justify-between items-center mb-5">
+                    <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                        <i class="fa-regular fa-pen-to-square text-sage-600"></i> Catatan & Tugas
+                    </h3>
+                    <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <form id="task-form" onsubmit="saveTask(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Mata Pelajaran / Judul Tugas</label>
+                        <input type="text" id="task-title" required placeholder="Contoh: Tugas KIK Presentasi" 
+                            class="w-full px-4 py-2.5 rounded-xl bg-white/80 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sage-500 text-sm shadow-neu-in">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">Hari</label>
+                            <select id="task-day" class="w-full px-3 py-2.5 rounded-xl bg-white/80 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sage-500 text-sm shadow-neu-in">
+                                <option value="0">Senin</option>
+                                <option value="1">Selasa</option>
+                                <option value="2">Rabu</option>
+                                <option value="3">Kamis</option>
+                                <option value="4">Jumat</option>
+                                <option value="5">Sabtu</option>
+                                <option value="6">Minggu</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">Tenggat Waktu</label>
+                            <input type="time" id="task-time" required 
+                                class="w-full px-3 py-2.5 rounded-xl bg-white/80 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sage-500 text-sm shadow-neu-in">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Catatan Tambahan</label>
+                        <textarea id="task-desc" rows="3" placeholder="Tuliskan detail tugas atau PR..." 
+                            class="w-full px-4 py-2 rounded-xl bg-white/80 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-sage-500 text-sm shadow-neu-in"></textarea>
+                    </div>
+
+                    <div class="pt-2">
+                        <button type="submit" class="w-full py-3 bg-sage-600 hover:bg-sage-700 text-white font-bold rounded-xl shadow-lg transition-all active:scale-95">
+                            Simpan Tugas
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
     </div>
 
-    <script src="script.js"></script>
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // DATA JADWAL UMUM & PRODUKTIF XI RPL 2
+        const scheduleData = {
+            umum: {
+                0: [ // SENIN
+                    { start: "06:30", end: "07:10", name: "Pembiasaan Karakter", teacher: "Tim Pembiasaan", room: "RT-27", icon: "fa-user-shield" },
+                    { start: "07:10", end: "09:50", name: "Kreativitas, Inovasi & Kewirausahaan", teacher: "Yusharizal, S. ST", room: "RT-27", icon: "fa-lightbulb" },
+                    { start: "09:50", end: "10:10", name: "Istirahat Kesatu", teacher: "-", room: "-", isBreak: true, icon: "fa-mug-hot" },
+                    { start: "10:10", end: "12:10", name: "Kreativitas, Inovasi & Kewirausahaan", teacher: "Yusharizal, S. ST", room: "RT-27", icon: "fa-lightbulb" },
+                    { start: "12:10", end: "13:00", name: "Istirahat Kedua", teacher: "-", room: "-", isBreak: true, icon: "fa-utensils" },
+                    { start: "13:00", end: "15:00", name: "Kreativitas, Inovasi & Kewirausahaan", teacher: "Yusharizal, S. ST", room: "RT-27", icon: "fa-briefcase" }
+                ],
+                1: [ // SELASA
+                    { start: "06:30", end: "08:30", name: "Pendidikan Agama dan Budi Pekerti", teacher: "Siti Salbiyah, S.Pd.I", room: "RT-27", icon: "fa-mosque" },
+                    { start: "08:30", end: "09:50", name: "Bahasa Inggris", teacher: "Ade Suci Romadhona, S.Pd", room: "RT-27", icon: "fa-language" },
+                    { start: "09:50", end: "10:10", name: "Istirahat Kesatu", teacher: "-", room: "-", isBreak: true, icon: "fa-mug-hot" },
+                    { start: "10:10", end: "11:30", name: "Bahasa Inggris", teacher: "Ade Suci Romadhona, S.Pd", room: "RT-27", icon: "fa-language" },
+                    { start: "11:30", end: "12:10", name: "Pend. Pancasila", teacher: "Juliyantika, S. Pd.", room: "RT-27", icon: "fa-flag" },
+                    { start: "12:10", end: "13:00", name: "Istirahat Kedua", teacher: "-", room: "-", isBreak: true, icon: "fa-utensils" },
+                    { start: "13:00", end: "15:00", name: "Pend. Pancasila", teacher: "Juliyantika, S. Pd.", room: "RT-27", icon: "fa-flag" }
+                ],
+                2: [ // RABU
+                    { start: "06:30", end: "07:10", name: "Pembiasaan Karakter", teacher: "Tim Pembiasaan", room: "RT-27", icon: "fa-user-shield" },
+                    { start: "07:10", end: "09:50", name: "Bahasa Inggris", teacher: "Ade Suci Romadhona, S.Pd", room: "RT-27", icon: "fa-language" },
+                    { start: "09:50", end: "10:10", name: "Istirahat Kesatu", teacher: "-", room: "-", isBreak: true, icon: "fa-mug-hot" },
+                    { start: "10:10", end: "12:10", name: "Matematika", teacher: "Dra. Christianingtyas", room: "RT-27", icon: "fa-calculator" },
+                    { start: "12:10", end: "13:00", name: "Istirahat Kedua", teacher: "-", room: "-", isBreak: true, icon: "fa-utensils" },
+                    { start: "13:00", end: "15:00", name: "Bahasa Indonesia", teacher: "Lisaniara, S. Pd", room: "RT-27", icon: "fa-book" }
+                ],
+                3: [ // KAMIS
+                    { start: "06:30", end: "08:30", name: "Pendidikan Agama dan Budi Pekerti", teacher: "Siti Salbiyah, S.Pd.I", room: "RT-27", icon: "fa-mosque" },
+                    { start: "08:30", end: "09:50", name: "Sejarah", teacher: "Meyfa Noer K. Melani, S.ST", room: "RT-27", icon: "fa-landmark" },
+                    { start: "09:50", end: "10:10", name: "Istirahat Kesatu", teacher: "-", room: "-", isBreak: true, icon: "fa-mug-hot" },
+                    { start: "10:10", end: "11:30", name: "Sejarah", teacher: "Meyfa Noer K. Melani, S.ST", room: "RT-27", icon: "fa-landmark" },
+                    { start: "11:30", end: "12:10", name: "Bahasa Jepang", teacher: "Novi Karisma, S.Pd", room: "RT-27", icon: "fa-torii-gate" },
+                    { start: "12:10", end: "13:00", name: "Istirahat Kedua", teacher: "-", room: "-", isBreak: true, icon: "fa-utensils" },
+                    { start: "13:00", end: "15:00", name: "Bahasa Jepang", teacher: "Novi Karisma, S.Pd", room: "RT-27", icon: "fa-torii-gate" }
+                ],
+                4: [ // JUMAT
+                    { start: "06:30", end: "07:50", name: "Pembiasaan Karakter", teacher: "Tim Pembiasaan", room: "RT-27", icon: "fa-user-shield" },
+                    { start: "07:50", end: "09:50", name: "Matematika", teacher: "Dra. Christianingtyas", room: "RT-27", icon: "fa-calculator" },
+                    { start: "09:50", end: "10:10", name: "Istirahat Kesatu", teacher: "-", room: "-", isBreak: true, icon: "fa-mug-hot" },
+                    { start: "10:10", end: "11:30", name: "Bahasa Indonesia", teacher: "Lisaniara, S. Pd", room: "RT-27", icon: "fa-book" },
+                    { start: "11:30", end: "13:00", name: "Sholat Jumat / Rohani Keagamaan & Istirahat", teacher: "-", room: "Masjid / RT-27", isBreak: true, icon: "fa-kaaba" },
+                    { start: "13:00", end: "14:20", name: "Bahasa Indonesia", teacher: "Lisaniara, S. Pd", room: "RT-27", icon: "fa-book" }
+                ],
+                5: [], 6: []
+            },
+            produktif: {
+                0: [ // SENIN PRODUKTIF
+                    { start: "06:30", end: "07:10", name: "Pembiasaan Karakter RPL", teacher: "Tim Produktif", room: "Lab RPL 1", icon: "fa-user-shield" },
+                    { start: "07:10", end: "09:50", name: "Pemrograman Web & Perangkat Bergerak", teacher: "Guru Kejuruan RPL", room: "Lab RPL 1", icon: "fa-code" },
+                    { start: "09:50", end: "10:10", name: "Istirahat Kesatu", teacher: "-", room: "-", isBreak: true, icon: "fa-mug-hot" },
+                    { start: "10:10", end: "12:10", name: "Pemrograman Web (Frontend React/Vue)", teacher: "Guru Kejuruan RPL", room: "Lab RPL 1", icon: "fa-laptop-code" },
+                    { start: "12:10", end: "13:00", name: "Istirahat Kedua", teacher: "-", room: "-", isBreak: true, icon: "fa-utensils" },
+                    { start: "13:00", end: "15:00", name: "Praktikum Web Development", teacher: "Guru Kejuruan RPL", room: "Lab RPL 1", icon: "fa-globe" }
+                ],
+                1: [ // SELASA PRODUKTIF
+                    { start: "06:30", end: "08:30", name: "Pemrograman Berorientasi Objek (PBO)", teacher: "Guru Kejuruan RPL", room: "Lab RPL 2", icon: "fa-cubes" },
+                    { start: "08:30", end: "09:50", name: "Konsep OOP & Java Application", teacher: "Guru Kejuruan RPL", room: "Lab RPL 2", icon: "fa-desktop" },
+                    { start: "09:50", end: "10:10", name: "Istirahat Kesatu", teacher: "-", room: "-", isBreak: true, icon: "fa-mug-hot" },
+                    { start: "10:10", end: "11:30", name: "Praktikum Java / Class Diagram Implementation", teacher: "Guru Kejuruan RPL", room: "Lab RPL 2", icon: "fa-laptop" },
+                    { start: "11:30", end: "12:10", name: "Pemodelan Perangkat Lunak (UML)", teacher: "Guru Kejuruan RPL", room: "Lab RPL 2", icon: "fa-sitemap" },
+                    { start: "12:10", end: "13:00", name: "Istirahat Kedua", teacher: "-", room: "-", isBreak: true, icon: "fa-utensils" },
+                    { start: "13:00", end: "15:00", name: "Desain Sistem & Software Architecture", teacher: "Guru Kejuruan RPL", room: "Lab RPL 2", icon: "fa-diagram-project" }
+                ],
+                2: [ // RABU PRODUKTIF
+                    { start: "06:30", end: "07:10", name: "Pembiasaan Karakter Industri", teacher: "Tim Produktif", room: "Lab RPL 1", icon: "fa-user-shield" },
+                    { start: "07:10", end: "09:50", name: "Basis Data & Perancangan MySQL", teacher: "Guru Kejuruan RPL", room: "Lab RPL 1", icon: "fa-database" },
+                    { start: "09:50", end: "10:10", name: "Istirahat Kesatu", teacher: "-", room: "-", isBreak: true, icon: "fa-mug-hot" },
+                    { start: "10:10", end: "12:10", name: "Query SQL & Relasi Tabel", teacher: "Guru Kejuruan RPL", room: "Lab RPL 1", icon: "fa-network-wired" },
+                    { start: "12:10", end: "13:00", name: "Istirahat Kedua", teacher: "-", room: "-", isBreak: true, icon: "fa-utensils" },
+                    { start: "13:00", end: "15:00", name: "Praktikum Database Management", teacher: "Guru Kejuruan RPL", room: "Lab RPL 1", icon: "fa-server" }
+                ],
+                3: [ // KAMIS PRODUKTIF
+                    { start: "06:30", end: "08:30", name: "Produk Kreatif & Kewirausahaan RPL", teacher: "Yusharizal, S. ST", room: "Lab RPL 2", icon: "fa-lightbulb" },
+                    { start: "08:30", end: "09:50", name: "Pengembangan Software Project (Sprint 1)", teacher: "Guru Kejuruan RPL", room: "Lab RPL 2", icon: "fa-square-code" },
+                    { start: "09:50", end: "10:10", name: "Istirahat Kesatu", teacher: "-", room: "-", isBreak: true, icon: "fa-mug-hot" },
+                    { start: "10:10", end: "11:30", name: "Project Development & Coding Session", teacher: "Guru Kejuruan RPL", room: "Lab RPL 2", icon: "fa-terminal" },
+                    { start: "11:30", end: "12:10", name: "Code Review & Refactoring", teacher: "Guru Kejuruan RPL", room: "Lab RPL 2", icon: "fa-bug-slash" },
+                    { start: "12:10", end: "13:00", name: "Istirahat Kedua", teacher: "-", room: "-", isBreak: true, icon: "fa-utensils" },
+                    { start: "13:00", end: "15:00", name: "Project Testing & Deployment", teacher: "Guru Kejuruan RPL", room: "Lab RPL 2", icon: "fa-upload" }
+                ],
+                4: [ // JUMAT PRODUKTIF
+                    { start: "06:30", end: "07:50", name: "Pembiasaan Karakter & Budaya Kerja", teacher: "Tim Produktif", room: "Lab RPL 1", icon: "fa-hand-holding-heart" },
+                    { start: "07:50", end: "09:50", name: "Mobile App Development (Flutter/Android)", teacher: "Guru Kejuruan RPL", room: "Lab RPL 1", icon: "fa-mobile-screen-button" },
+                    { start: "09:50", end: "10:10", name: "Istirahat Kesatu", teacher: "-", room: "-", isBreak: true, icon: "fa-mug-hot" },
+                    { start: "10:10", end: "11:30", name: "API Integration & Backend Connect", teacher: "Guru Kejuruan RPL", room: "Lab RPL 1", icon: "fa-plug" },
+                    { start: "11:30", end: "13:00", name: "Sholat Jumat & Istirahat", teacher: "-", room: "Masjid / RT-27", isBreak: true, icon: "fa-kaaba" },
+                    { start: "13:00", end: "14:20", name: "Evaluasi Mingguan Project RPL", teacher: "Guru Kejuruan RPL", room: "Lab RPL 1", icon: "fa-circle-check" }
+                ],
+                5: [], 6: []
+            }
+        };
+
+        const dayNames = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
+        const dayShorts = ["S", "S", "R", "K", "J", "S", "M"];
+
+        // STATE APP
+        let currentWeekType = 'umum'; // 'umum' | 'produktif'
+        let selectedDayIndex = 0; // 0 = Senin, 6 = Minggu
+        let activeTab = 'home'; // 'home' | 'notes'
+        let tasks = JSON.parse(localStorage.getItem('rpl2_tasks') || '[]');
+
+        // INITIALIZATION
+        window.onload = function() {
+            // Set default selected day based on real day
+            const now = new Date();
+            let day = now.getDay(); // 0 is Sunday, 1 is Monday...
+            selectedDayIndex = day === 0 ? 6 : day - 1;
+
+            updateRealtimeClock();
+            setInterval(updateRealtimeClock, 1000);
+
+            renderDaysPill();
+            renderSchedule();
+            updateNotesBadge();
+        };
+
+        function updateRealtimeClock() {
+            const now = new Date();
+            
+            // Format time
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('live-clock').innerText = `${hours}:${minutes}:${seconds} WIB`;
+
+            // Format date string
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('current-date-str').innerText = now.toLocaleDateString('id-ID', options);
+
+            // Re-render schedule every minute to refresh active status highlight
+            if (seconds === '00') {
+                renderSchedule();
+            }
+        }
+
+        // SET MINGGU UMUM / PRODUKTIF
+        function setWeekType(type) {
+            currentWeekType = type;
+            const btnUmum = document.getElementById('btn-week-umum');
+            const btnProd = document.getElementById('btn-week-produktif');
+
+            if (type === 'umum') {
+                btnUmum.className = "w-1/2 py-2 text-xs font-bold rounded-xl transition-all duration-300 z-10 text-white bg-sage-600 shadow-md";
+                btnProd.className = "w-1/2 py-2 text-xs font-bold rounded-xl transition-all duration-300 z-10 text-gray-600";
+            } else {
+                btnProd.className = "w-1/2 py-2 text-xs font-bold rounded-xl transition-all duration-300 z-10 text-white bg-amber-500 shadow-md";
+                btnUmum.className = "w-1/2 py-2 text-xs font-bold rounded-xl transition-all duration-300 z-10 text-gray-600";
+            }
+
+            renderSchedule();
+        }
+
+        // RELATIVE DAY NAVIGATION (Kemarin, Hari ini, Besok)
+        function navigateRelativeDay(offset) {
+            const now = new Date();
+            let todayIdx = now.getDay() === 0 ? 6 : now.getDay() - 1;
+            let targetIdx = todayIdx + offset;
+
+            if (targetIdx < 0) targetIdx = 6;
+            if (targetIdx > 6) targetIdx = 0;
+
+            selectedDayIndex = targetIdx;
+            
+            // Update UI buttons
+            const btnYesterday = document.getElementById('btn-rel-kemarin');
+            const btnToday = document.getElementById('btn-rel-today');
+            const btnTomorrow = document.getElementById('btn-rel-besok');
+
+            [btnYesterday, btnToday, btnTomorrow].forEach(b => {
+                b.className = "flex-1 py-1.5 text-xs font-semibold text-gray-500 hover:text-sage-700 rounded-xl transition-all text-center";
+            });
+
+            if (offset === -1) btnYesterday.className = "flex-1 py-1.5 text-xs font-bold text-white bg-amber-500 rounded-xl shadow-md transition-all text-center";
+            if (offset === 0) btnToday.className = "flex-1 py-1.5 text-xs font-bold text-white bg-amber-500 rounded-xl shadow-md transition-all text-center";
+            if (offset === 1) btnTomorrow.className = "flex-1 py-1.5 text-xs font-bold text-white bg-amber-500 rounded-xl shadow-md transition-all text-center";
+
+            renderDaysPill();
+            renderSchedule();
+        }
+
+        // RENDER DAYS PILL SELECTOR
+        function renderDaysPill() {
+            const container = document.getElementById('days-pill-container');
+            container.innerHTML = '';
+
+            const now = new Date();
+            const realTodayIdx = now.getDay() === 0 ? 6 : now.getDay() - 1;
+
+            dayNames.forEach((name, idx) => {
+                const isSelected = idx === selectedDayIndex;
+                const isRealToday = idx === realTodayIdx;
+
+                const pill = document.createElement('button');
+                pill.onclick = () => {
+                    selectedDayIndex = idx;
+                    renderDaysPill();
+                    renderSchedule();
+                };
+
+                let activeClasses = isSelected 
+                    ? 'bg-sage-600 text-white shadow-neu-sm scale-105 font-bold' 
+                    : 'bg-white/70 text-gray-600 hover:bg-white font-medium';
+                
+                let todayIndicator = isRealToday ? `<span class="w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-amber-400' : 'bg-sage-600'}"></span>` : '';
+
+                pill.className = `flex-shrink-0 flex flex-col items-center justify-center w-12 py-2.5 rounded-2xl transition-all duration-200 ${activeClasses}`;
+                pill.innerHTML = `
+                    <span class="text-[10px] uppercase opacity-80">${dayShorts[idx]}</span>
+                    <span class="text-sm my-0.5">${name.substring(0, 3)}</span>
+                    ${todayIndicator}
+                `;
+                container.appendChild(pill);
+            });
+        }
+
+        // RENDER SCHEDULE OR NOTES
+        function renderSchedule() {
+            const container = document.getElementById('schedule-container');
+            container.innerHTML = '';
+
+            if (activeTab === 'notes') {
+                renderNotesView(container);
+                return;
+            }
+
+            const currentDaySchedule = scheduleData[currentWeekType][selectedDayIndex] || [];
+
+            if (currentDaySchedule.length === 0) {
+                container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-64 text-center p-6">
+                        <div class="w-20 h-20 bg-sage-100 text-sage-600 rounded-full flex items-center justify-center mb-3 text-3xl shadow-neu-inner">
+                            <i class="fa-solid fa-mug-hot"></i>
+                        </div>
+                        <h3 class="font-bold text-gray-700 text-base">Tidak Ada Jadwal Pelajaran</h3>
+                        <p class="text-xs text-gray-500 mt-1">Hari ${dayNames[selectedDayIndex]} adalah hari libur sekolah.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const now = new Date();
+            const currentRealDay = now.getDay() === 0 ? 6 : now.getDay() - 1;
+            const currentHours = now.getHours();
+            const currentMinutes = now.getMinutes();
+            const currentTimeStr = `${String(currentHours).padStart(2, '0')}:${String(currentMinutes).padStart(2, '0')}`;
+
+            currentDaySchedule.forEach((item, index) => {
+                const isBreak = item.isBreak;
+                let status = 'upcoming'; // 'done', 'active', 'upcoming'
+                
+                if (selectedDayIndex < currentRealDay) {
+                    status = 'done';
+                } else if (selectedDayIndex > currentRealDay) {
+                    status = 'upcoming';
+                } else {
+                    if (currentTimeStr > item.end) {
+                        status = 'done';
+                    } else if (currentTimeStr >= item.start && currentTimeStr <= item.end) {
+                        status = 'active';
+                    } else {
+                        status = 'upcoming';
+                    }
+                }
+
+                const card = document.createElement('div');
+                
+                // Active status custom style based on reference UI (Green Solid Card)
+                if (status === 'active') {
+                    card.className = "mb-4 p-4 rounded-2xl bg-sage-600 text-white shadow-xl transform scale-[1.02] border border-sage-500 transition-all relative overflow-hidden";
+                    card.innerHTML = `
+                        <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center text-lg text-white">
+                                    <i class="fa-solid ${item.icon || 'fa-book-open'}"></i>
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="bg-amber-500 text-white text-[9px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider shadow">Sedang Berlangsung</span>
+                                    </div>
+                                    <h2 class="font-bold text-base mt-0.5 leading-snug">${item.name}</h2>
+                                </div>
+                            </div>
+                            <button onclick="openNoteModalFor('${item.name}')" class="text-white/80 hover:text-white p-1">
+                                <i class="fa-regular fa-pen-to-square"></i>
+                            </button>
+                        </div>
+                        <div class="mt-3 pt-3 border-t border-white/20 flex items-center justify-between text-xs text-sage-100 font-medium">
+                            <div class="flex items-center space-x-1.5">
+                                <i class="fa-regular fa-clock"></i>
+                                <span>${item.start} - ${item.end} WIB</span>
+                            </div>
+                            ${!isBreak ? `
+                            <div class="flex items-center space-x-2">
+                                <span><i class="fa-regular fa-user mr-1"></i>${item.teacher}</span>
+                                <span class="bg-white/20 px-2 py-0.5 rounded-md text-[10px] font-bold">${item.room}</span>
+                            </div>` : ''}
+                        </div>
+                    `;
+                } else {
+                    // Normal / Inactive / Break card
+                    const opacityClass = status === 'done' ? 'opacity-60 bg-white/60' : 'bg-white/90';
+                    card.className = `mb-3 p-4 rounded-2xl shadow-neu-sm ${opacityClass} border border-white transition-all`;
+                    
+                    card.innerHTML = `
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-9 h-9 rounded-xl ${isBreak ? 'bg-amber-100 text-amber-600' : 'bg-sage-100 text-sage-600'} flex items-center justify-center text-sm font-bold">
+                                    <i class="fa-solid ${item.icon || 'fa-book'}"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-gray-800 text-sm">${item.name}</h3>
+                                    <div class="flex items-center space-x-2 text-xs text-gray-500 mt-0.5">
+                                        <span><i class="fa-regular fa-clock mr-1"></i>${item.start} - ${item.end}</span>
+                                        ${status === 'done' ? '<span class="text-[10px] bg-gray-200 text-gray-600 font-bold px-1.5 py-0.2 rounded">Selesai</span>' : ''}
+                                    </div>
+                                </div>
+                            </div>
+                            ${!isBreak ? `
+                            <button onclick="openNoteModalFor('${item.name}')" class="text-gray-400 hover:text-sage-600 p-1 text-sm">
+                                <i class="fa-regular fa-pen-to-square"></i>
+                            </button>` : ''}
+                        </div>
+                        ${!isBreak ? `
+                        <div class="mt-2.5 pt-2 border-t border-gray-100 flex items-center justify-between text-xs text-gray-600">
+                            <span class="truncate max-w-[200px]"><i class="fa-regular fa-user mr-1 text-sage-600"></i>${item.teacher}</span>
+                            <span class="font-semibold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-md text-[10px]">${item.room}</span>
+                        </div>` : ''}
+                    `;
+                }
+
+                container.appendChild(card);
+            });
+        }
+
+        // TAB SWITCHING (HOME / NOTES)
+        function switchTab(tab) {
+            activeTab = tab;
+            const navHome = document.getElementById('nav-home');
+            const navNotes = document.getElementById('nav-notes');
+
+            if (tab === 'home') {
+                navHome.className = "p-3 text-sage-600 rounded-2xl transition-all";
+                navNotes.className = "p-3 text-gray-400 hover:text-sage-600 rounded-2xl transition-all relative";
+            } else {
+                navNotes.className = "p-3 text-sage-600 rounded-2xl transition-all relative";
+                navHome.className = "p-3 text-gray-400 hover:text-sage-600 rounded-2xl transition-all";
+            }
+            renderSchedule();
+        }
+
+        // RENDER NOTES / TASKS LIST
+        function renderNotesView(container) {
+            if (tasks.length === 0) {
+                container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-64 text-center p-6">
+                        <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mb-3 text-2xl">
+                            <i class="fa-solid fa-clipboard-check"></i>
+                        </div>
+                        <h3 class="font-bold text-gray-700 text-base">Belum Ada Tugas / Catatan</h3>
+                        <p class="text-xs text-gray-500 mt-1">Klik tombol (+) di bawah untuk menambah tugas baru.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const header = document.createElement('div');
+            header.className = "flex justify-between items-center mb-3";
+            header.innerHTML = `<h3 class="font-bold text-gray-700 text-sm">Daftar Tugas (${tasks.length})</h3>`;
+            container.appendChild(header);
+
+            tasks.forEach((task, idx) => {
+                const card = document.createElement('div');
+                card.className = "mb-3 p-4 rounded-2xl bg-white/90 shadow-neu-sm border border-white flex justify-between items-start";
+                card.innerHTML = `
+                    <div class="flex-1 pr-3">
+                        <div class="flex items-center gap-2">
+                            <span class="bg-sage-100 text-sage-700 font-bold text-[10px] px-2 py-0.5 rounded-md">${dayNames[task.day]}</span>
+                            <span class="text-xs font-medium text-gray-500"><i class="fa-regular fa-clock mr-1"></i>${task.time}</span>
+                        </div>
+                        <h4 class="font-bold text-gray-800 text-sm mt-1">${task.title}</h4>
+                        ${task.desc ? `<p class="text-xs text-gray-600 mt-1 bg-gray-50 p-2 rounded-lg border border-gray-100">${task.desc}</p>` : ''}
+                    </div>
+                    <button onclick="deleteTask(${idx})" class="text-red-400 hover:text-red-600 p-1">
+                        <i class="fa-regular fa-trash-can"></i>
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // MODAL FUNCTIONS
+        function openModal() {
+            document.getElementById('task-modal').classList.remove('hidden');
+            document.getElementById('task-day').value = selectedDayIndex;
+        }
+
+        function closeModal() {
+            document.getElementById('task-modal').classList.add('hidden');
+            document.getElementById('task-form').reset();
+        }
+
+        function openNoteModalFor(title) {
+            openModal();
+            document.getElementById('task-title').value = `Tugas ${title}`;
+        }
+
+        function saveTask(event) {
+            event.preventDefault();
+            const title = document.getElementById('task-title').value;
+            const day = parseInt(document.getElementById('task-day').value);
+            const time = document.getElementById('task-time').value;
+            const desc = document.getElementById('task-desc').value;
+
+            tasks.push({ title, day, time, desc });
+            localStorage.setItem('rpl2_tasks', JSON.stringify(tasks));
+
+            closeModal();
+            updateNotesBadge();
+            if (activeTab === 'notes') renderSchedule();
+        }
+
+        function deleteTask(idx) {
+            tasks.splice(idx, 1);
+            localStorage.setItem('rpl2_tasks', JSON.stringify(tasks));
+            updateNotesBadge();
+            renderSchedule();
+        }
+
+        function updateNotesBadge() {
+            const badge = document.getElementById('notes-badge');
+            if (tasks.length > 0) {
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+    </script>
 </body>
-
 </html>
